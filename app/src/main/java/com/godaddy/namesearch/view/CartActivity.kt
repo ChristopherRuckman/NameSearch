@@ -1,10 +1,7 @@
-package com.godaddy.namesearch
+package com.godaddy.namesearch.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.godaddy.namesearch.model.Domain
+import com.godaddy.namesearch.model.AuthManager
+import com.godaddy.namesearch.model.PaymentsManager
+import com.godaddy.namesearch.R
+import com.godaddy.namesearch.model.ShoppingCart
+import com.godaddy.namesearch.viewmodel.CartAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -105,32 +106,4 @@ class CartActivity : AppCompatActivity() {
             }
         }
     }
-}
-
-class CartAdapter(private val onItemRemoved: () -> Unit): RecyclerView.Adapter<CartAdapter.ViewHolder>() {
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(item: Domain, onItemRemoved: () -> Unit) {
-            itemView.findViewById<TextView>(R.id.name_text_view).text = item.name
-            itemView.findViewById<TextView>(R.id.price_text_view).text = item.price
-            itemView.findViewById<ImageButton>(R.id.remove_button).setOnClickListener {
-                ShoppingCart.domains = ShoppingCart.domains.filter { it.name != item.name }
-                onItemRemoved()
-            }
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_cart, parent, false)
-        return ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(ShoppingCart.domains[position]) {
-            onItemRemoved()
-            notifyDataSetChanged()
-        }
-    }
-
-    override fun getItemCount() = ShoppingCart.domains.size
 }

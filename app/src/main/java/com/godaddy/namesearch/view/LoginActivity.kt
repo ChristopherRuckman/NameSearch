@@ -1,4 +1,4 @@
-package com.godaddy.namesearch
+package com.godaddy.namesearch.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.lifecycleScope
+import com.godaddy.namesearch.model.AuthManager
+import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.LoginResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers

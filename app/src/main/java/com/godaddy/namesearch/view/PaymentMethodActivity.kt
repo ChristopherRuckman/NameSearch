@@ -1,16 +1,13 @@
-package com.godaddy.namesearch
+package com.godaddy.namesearch.view
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
+import com.godaddy.namesearch.model.PaymentsManager
+import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.PaymentMethod
+import com.godaddy.namesearch.viewmodel.PaymentMethodAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -55,27 +52,6 @@ class PaymentMethodActivity : AppCompatActivity() {
             }
             val paymentListType = object : TypeToken<List<PaymentMethod>>() {}.type
             Gson().fromJson(response.toString(), paymentListType)
-        }
-    }
-
-    class PaymentMethodAdapter(
-        context: Context
-    ): ArrayAdapter<PaymentMethod>(context, -1,  mutableListOf()) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var itemView = convertView
-            if (itemView == null) {
-                itemView = LayoutInflater.from(context)
-                    .inflate(R.layout.item_domain_result, parent, false)
-            }
-
-            itemView?.apply {
-                val item = getItem(position)
-                findViewById<TextView>(R.id.name_text_view).text = item?.name
-                findViewById<TextView>(R.id.price_text_view).text =  item?.lastFour?.also { "Ending in $it" } ?: item?.displayFormattedEmail
-                tag = item
-            }
-
-            return itemView!!
         }
     }
 }

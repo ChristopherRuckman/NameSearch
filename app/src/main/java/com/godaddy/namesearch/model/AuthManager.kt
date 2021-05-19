@@ -1,4 +1,4 @@
-package com.godaddy.namesearch
+package com.godaddy.namesearch.model
 
 object AuthManager {
     var user: User? = null

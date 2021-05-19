@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NameSearch">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".view.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,14 +20,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PaymentMethodActivity"
-            android:parentActivityName=".CartActivity"/>
+            android:name=".view.PaymentMethodActivity"
+            android:parentActivityName=".view.CartActivity"/>
         <activity
-            android:name=".CartActivity"
-            android:parentActivityName=".DomainSearchActivity"/>
+            android:name=".view.CartActivity"
+            android:parentActivityName=".view.DomainSearchActivity"/>
         <activity
-            android:name=".DomainSearchActivity"
-            android:parentActivityName=".LoginActivity"/>
+            android:name=".view.DomainSearchActivity"
+            android:parentActivityName=".view.LoginActivity"/>
     </application>
 
 </manifest>
