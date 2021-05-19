@@ -7,7 +7,6 @@ import androidx.lifecycle.lifecycleScope
 import com.godaddy.namesearch.model.PaymentsManager
 import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.PaymentMethod
-import com.godaddy.namesearch.viewmodel.PaymentMethodAdapter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers

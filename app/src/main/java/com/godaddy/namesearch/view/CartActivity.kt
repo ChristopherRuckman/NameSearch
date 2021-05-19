@@ -13,7 +13,6 @@ import com.godaddy.namesearch.model.AuthManager
 import com.godaddy.namesearch.model.PaymentsManager
 import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.ShoppingCart
-import com.godaddy.namesearch.viewmodel.CartAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

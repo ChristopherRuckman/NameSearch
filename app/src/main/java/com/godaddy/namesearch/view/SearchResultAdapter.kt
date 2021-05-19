@@ -1,17 +1,18 @@
-package com.godaddy.namesearch.viewmodel
+package com.godaddy.namesearch.view
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.godaddy.namesearch.R
-import com.godaddy.namesearch.model.PaymentMethod
+import com.godaddy.namesearch.model.Domain
 
-class PaymentMethodAdapter(
+class SearchResultAdapter(
     context: Context
-): ArrayAdapter<PaymentMethod>(context, -1,  mutableListOf()) {
+): ArrayAdapter<Domain>(context, -1,  mutableListOf()) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
         if (itemView == null) {
@@ -22,7 +23,11 @@ class PaymentMethodAdapter(
         itemView?.apply {
             val item = getItem(position)
             findViewById<TextView>(R.id.name_text_view).text = item?.name
-            findViewById<TextView>(R.id.price_text_view).text =  item?.lastFour?.also { "Ending in $it" } ?: item?.displayFormattedEmail
+            findViewById<TextView>(R.id.price_text_view).text = item?.price
+            itemView.setBackgroundColor(when (item!!.selected) {
+                true -> Color.LTGRAY
+                else -> Color.TRANSPARENT
+            })
             tag = item
         }
 

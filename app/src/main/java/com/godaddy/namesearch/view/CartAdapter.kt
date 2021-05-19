@@ -1,4 +1,4 @@
-package com.godaddy.namesearch.viewmodel
+package com.godaddy.namesearch.view
 
 import android.view.LayoutInflater
 import android.view.View
