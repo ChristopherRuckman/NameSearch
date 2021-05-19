@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.godaddy.namesearch.model.Domain
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,14 +21,6 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-
-
-data class Domain(
-    val name: String,
-    val price: String,
-    val productId: Int,
-    var selected: Boolean = false
-)
 
 class DomainSearchActivity : AppCompatActivity() {
     lateinit var searchResultAdapter: SearchResultAdapter
@@ -167,7 +160,7 @@ class DomainSearchActivity : AppCompatActivity() {
                 findViewById<TextView>(R.id.price_text_view).text = item?.price
                 itemView.setBackgroundColor(when (item!!.selected) {
                     true -> Color.LTGRAY
-                    false -> Color.TRANSPARENT
+                    else -> Color.TRANSPARENT
                 })
                 tag = item
             }

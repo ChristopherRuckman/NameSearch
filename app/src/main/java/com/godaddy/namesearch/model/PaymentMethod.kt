@@ -1,4 +1,4 @@
-package com.godaddy.namesearch
+package com.godaddy.namesearch.model
 
 data class PaymentMethod(
     val name: String,
