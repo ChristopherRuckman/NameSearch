@@ -1,4 +1,4 @@
-package com.godaddy.namesearch.view
+package com.godaddy.namesearch.view.adapter
 
 import android.content.Context
 import android.graphics.Color

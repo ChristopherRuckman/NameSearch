@@ -13,6 +13,7 @@ import com.godaddy.namesearch.DomainSearchRecommendedResponse
 import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.ShoppingCart
 import com.godaddy.namesearch.model.Domain
+import com.godaddy.namesearch.view.adapter.SearchResultAdapter
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
