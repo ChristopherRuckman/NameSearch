@@ -35,7 +35,7 @@ class CLRViewModelTest {
                 Domain("momNpop", "0.01", 100, false)
         )
     }
-    
+
     // Coroutine tests
     // Login
 
@@ -55,5 +55,15 @@ class CLRViewModelTest {
     @Test
     fun `test count list of domains`() = runBlocking {
         assertEquals(4, dsDomainResults.count())
+    }
+
+    @Test
+    fun `test validate 3rd item name in list`() = runBlocking {
+        assertEquals("google", dsDomainResults[2].name)
+    }
+
+    @Test
+    fun `test item out of bounds of list`() = runBlocking {
+        assertFalse(dsDomainResults.count() == 5)
     }
 }
