@@ -3,11 +3,13 @@ package com.godaddy.namesearch.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ListView
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.godaddy.namesearch.model.PaymentsManager
 import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.PaymentMethod
 import com.godaddy.namesearch.view.adapter.PaymentMethodAdapter
+import com.godaddy.namesearch.viewmodel.DomainViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +20,11 @@ import java.io.InputStreamReader
 import java.net.URL
 
 class PaymentMethodActivity : AppCompatActivity() {
+    private val viewModel: DomainViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())
+                .get(DomainViewModel::class.java)
+    }
+
     var paymentMethods: List<PaymentMethod> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,25 +40,8 @@ class PaymentMethodActivity : AppCompatActivity() {
 
 
         lifecycleScope.launch {
-            paymentMethods = fetchPaymentMethods()
+            paymentMethods = viewModel.fetchPaymentMethods()
             paymentMethodAdapter.addAll(paymentMethods)
-        }
-    }
-
-    private suspend fun fetchPaymentMethods(): List<PaymentMethod> {
-        return withContext(Dispatchers.IO) {
-            val url = URL("https://gd.proxied.io/user/payment-methods")
-            val connection = url.openConnection()
-            connection.connect()
-            val reader = BufferedReader(InputStreamReader(connection.inputStream))
-            val response = StringBuilder()
-            var responseLine = reader.readLine()
-            while (responseLine != null) {
-                response.append(responseLine)
-                responseLine = reader.readLine()
-            }
-            val paymentListType = object : TypeToken<List<PaymentMethod>>() {}.type
-            Gson().fromJson(response.toString(), paymentListType)
         }
     }
 }

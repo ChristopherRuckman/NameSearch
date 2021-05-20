@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.godaddy.namesearch.DomainSearchExactMatchResponse
 import com.godaddy.namesearch.DomainSearchRecommendedResponse
@@ -14,6 +15,7 @@ import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.ShoppingCart
 import com.godaddy.namesearch.model.Domain
 import com.godaddy.namesearch.view.adapter.SearchResultAdapter
+import com.godaddy.namesearch.viewmodel.DomainViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +26,11 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class DomainSearchActivity : AppCompatActivity() {
+    private val viewModel: DomainViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())
+                .get(DomainViewModel::class.java)
+    }
+
     lateinit var searchResultAdapter: SearchResultAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,75 +80,9 @@ class DomainSearchActivity : AppCompatActivity() {
     private fun loadData() {
         val searchQuery = findViewById<EditText>(R.id.search_edit_text).text.toString()
         lifecycleScope.launch {
-            val results = performSearch(searchQuery)
+            val results = viewModel.performSearch(searchQuery)
             searchResultAdapter.clear()
             searchResultAdapter.addAll(results)
-        }
-    }
-
-    private suspend fun performSearch(query: String): List<Domain> {
-        val results: List<Domain>
-        return withContext(Dispatchers.IO) {
-            val uri = Uri.parse("https://gd.proxied.io/search/exact")
-                .buildUpon()
-                .appendQueryParameter("q", query)
-            val url = URL(uri.toString())
-            val connection = url.openConnection() as HttpURLConnection
-            connection.setRequestProperty("Content-Type", "application/json; utf-8")
-            connection.setRequestProperty("Accept", "application/json");
-            connection.connect()
-            BufferedReader(InputStreamReader(connection.inputStream)).also {
-                val response = StringBuilder()
-                var responseLine = it.readLine()
-                while (responseLine != null) {
-                    response.append(responseLine)
-                    responseLine = it.readLine()
-                }
-
-                val exactMatchResponse =
-                    Gson().fromJson(response.toString(), DomainSearchExactMatchResponse::class.java)
-
-                val uri = Uri.parse("https://gd.proxied.io/search/spins")
-                    .buildUpon()
-                    .appendQueryParameter("q", query)
-                val url = URL(uri.toString())
-                val connection = url.openConnection() as HttpURLConnection
-                connection.setRequestProperty("Content-Type", "application/json; utf-8")
-                connection.setRequestProperty("Accept", "application/json");
-                connection.connect()
-                BufferedReader(InputStreamReader(connection.inputStream)).also {
-                    val response = StringBuilder()
-                    var responseLine = it.readLine()
-                    while (responseLine != null) {
-                        response.append(responseLine)
-                        responseLine = it.readLine()
-                    }
-                    val suggestionsResponse = Gson().fromJson(
-                        response.toString(),
-                        DomainSearchRecommendedResponse::class.java
-                    )
-
-                    val exactDomainPriceInfo = exactMatchResponse.products.first { product ->
-                        product.productId == exactMatchResponse.domain.productId
-                    }.priceInfo
-                    val exactDomain = Domain(
-                        exactMatchResponse.domain.fqdn,
-                        exactDomainPriceInfo.currentPriceDisplay,
-                        exactMatchResponse.domain.productId
-                    )
-
-                    val suggestionDomains = suggestionsResponse.domains.map { domain ->
-                        val priceInfo = suggestionsResponse.products
-                            .first { price -> price.productId == domain.productId }
-                            .priceInfo
-
-                        Domain(domain.fqdn, priceInfo.currentPriceDisplay, domain.productId)
-                    }
-
-                    results = listOf(exactDomain) + suggestionDomains
-                }
-            }
-            results
         }
     }
 }

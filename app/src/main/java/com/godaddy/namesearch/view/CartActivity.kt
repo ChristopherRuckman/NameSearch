@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.godaddy.namesearch.model.PaymentsManager
 import com.godaddy.namesearch.R
 import com.godaddy.namesearch.model.ShoppingCart
 import com.godaddy.namesearch.view.adapter.CartAdapter
+import com.godaddy.namesearch.viewmodel.DomainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +25,11 @@ import java.text.NumberFormat
 
 
 class CartActivity : AppCompatActivity() {
+    private val viewModel: DomainViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())
+                .get(DomainViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart)
@@ -72,38 +79,12 @@ class CartActivity : AppCompatActivity() {
     private fun performPayment() {
         findViewById<Button>(R.id.pay_now_button).isEnabled = false
         lifecycleScope.launch {
-            val result = postPayment()
+            val result = viewModel.postPayment()
             AlertDialog.Builder(this@CartActivity)
                 .setTitle("All done!")
                 .setMessage(result)
                 .show()
             findViewById<Button>(R.id.pay_now_button).isEnabled = true
-        }
-    }
-
-    private suspend fun postPayment(): String {
-        return withContext(Dispatchers.IO) {
-            val url = URL("https://gd.proxied.io/payments/process")
-            val connection = url.openConnection() as HttpURLConnection
-            connection.requestMethod = "POST"
-            connection.setRequestProperty("Content-Type", "application/json; utf-8")
-            connection.setRequestProperty("Accept", "application/json");
-            connection.doOutput = true
-            val paymentRequestJson = """{
-                "auth":"${AuthManager.token}",
-                "token":"${PaymentsManager.selectedPaymentMethod?.token}"
-            }"""
-            connection.outputStream.also {
-                val input = paymentRequestJson.toByteArray()
-                it.write(input, 0, input.size)
-            }
-            connection.connect()
-
-            if(connection.responseCode == HttpURLConnection.HTTP_OK) {
-                "Your purchase is complete!"
-            } else {
-                "There was an issue with your purchase"
-            }
         }
     }
 }
