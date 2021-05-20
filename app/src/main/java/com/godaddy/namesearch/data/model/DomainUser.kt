@@ -1,6 +1,6 @@
 package com.godaddy.namesearch.model
 
-data class User(
+data class DomainUser(
     val first: String,
     val last: String
 )
